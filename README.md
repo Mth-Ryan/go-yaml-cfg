@@ -37,7 +37,7 @@ import (
 type AppSettings struct {
     	DBSettings struct {
             	Host string `yaml:"host"`
-            	Port int	`yaml:"port"`
+            	Port int    `yaml:"port"`
             	Name string `yaml:"name"`
             	User string `yaml:"user"`
             	Pass string `yaml:"pass"`
