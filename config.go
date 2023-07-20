@@ -26,7 +26,7 @@ func InitializeConfigSingleton[T Instance](path string) error {
 	target := new(T)
 	loadAndParseConfig(path, target)
 	replaceEnvOnTarget(target)
-	singleton.ty = reflect.TypeOf(target)
+	singleton.ty = reflect.TypeOf(*target)
 	singleton.data = interface{}(*target)
 
 	return nil
