@@ -7,7 +7,7 @@ import (
 	"strings"
 )
 
-var envRegex, _ = regexp.Compile(`^\$\{.+\}$`)
+var envRegex, _ = regexp.Compile(`\$\{[^\}]+\}`)
 var defaultRegex, _ = regexp.Compile(`^\$\{.+\:\-.+\}$`)
 
 func replaceEnvOnTarget(target interface{}) {
@@ -33,12 +33,14 @@ func replaceEnvOnTarget(target interface{}) {
 }
 
 func replaceEnv(field string) string {
-	env := stripEnvPattern(field)
-	if defaultRegex.MatchString(field) {
-		env, def := splitEnvDefault(env)
-		return envOrDefault(env, def)
-	}
-	return envOrDefault(env, "")
+	return envRegex.ReplaceAllStringFunc(field, func(match string) string {
+		env := stripEnvPattern(match)
+		if defaultRegex.MatchString(match) {
+			key, def := splitEnvDefault(env)
+			return envOrDefault(key, def)
+		}
+		return envOrDefault(env, "")
+	})
 }
 
 func stripEnvPattern(env string) string {

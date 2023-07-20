@@ -12,6 +12,8 @@ func TestEnvRegexPass(t *testing.T) {
 		"${HELLO:-hello}",
 		"${HELLO:-hello world}",
 		"${HELLO:-hello:-world}",
+		"inner env ${HELLO:-hello}",
+		"${HELLO:-hello} ${WORLD:-world}",
 	}
 
 	for _, env := range envs {
@@ -86,6 +88,31 @@ func TestEnvStringReplace(t *testing.T) {
 		if value != strings.ToLower(env) {
 			t.Errorf("The env replace do not match. Expected: %s, found: %s", env, value)
 		}
+	}
+}
+
+func TestEnvStringReplaceInner(t *testing.T) {
+	t.Setenv("SOME_VAR", "someVar")
+
+	input := "some thing ${SOME_VAR}"
+	expected := "some thing someVar"
+
+	result := replaceEnv(input)
+	if result != expected {
+		t.Errorf("Mismatch inner replacement. Expected: %s found: %s", expected, result)
+	}
+}
+
+func TestEnvStringReplaceMutiple(t *testing.T) {
+	t.Setenv("HELLO", "hello")
+	t.Setenv("WORLD", "world")
+
+	input := "${HELLO} ${WORLD}"
+	expected := "hello world"
+
+	result := replaceEnv(input)
+	if result != expected {
+		t.Errorf("Mismatch inner replacement. Expected: %s found: %s", expected, result)
 	}
 }
 
