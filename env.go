@@ -15,21 +15,27 @@ func replaceEnvOnTarget(target interface{}) {
 	if v.Kind() == reflect.Ptr {
 		v = v.Elem()
 	}
-	if v.Kind() != reflect.Struct {
+
+	switch v.Kind() {
+	case reflect.String:
+		v.SetString(replaceEnv(v.String()))
+
+	case reflect.Struct:
+		for i := 0; i < v.NumField(); i++ {
+			field := v.Field(i)
+			replaceEnvOnTarget(field.Addr().Interface())
+		}
+
+	case reflect.Array, reflect.Slice:
+		for i := 0; i < v.Len(); i++ {
+			elem := v.Index(i)
+			replaceEnvOnTarget(elem.Addr().Interface())
+		}
+
+	default:
 		return
 	}
 
-	for i := 0; i < v.NumField(); i++ {
-		field := v.Field(i)
-		switch field.Kind() {
-		case reflect.String:
-			if envRegex.MatchString(field.String()) {
-				field.SetString(replaceEnv(field.String()))
-			}
-		case reflect.Struct:
-			replaceEnvOnTarget(field.Addr().Interface())
-		}
-	}
 }
 
 func replaceEnv(field string) string {

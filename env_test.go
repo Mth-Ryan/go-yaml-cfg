@@ -206,3 +206,59 @@ func TestReplaceOnNestedTarget(t *testing.T) {
 		t.Errorf("Target field dont match with the env. Expected: %s, found: %s", envs["PASSWD"], target.Auth.Password)
 	}
 }
+
+func TestOuterSliceReplace(t *testing.T) {
+	envs := map[string]string{
+		"HOST": "localhost",
+	}
+
+	for key, val := range envs {
+		t.Setenv(key, val)
+	}
+
+	type InnerTarget struct {
+		HostName string
+		Port     int
+	}
+
+	target := []InnerTarget{
+		{"host1", 5000},
+		{"host2", 5001},
+		{"${HOST}", 5002},
+	}
+
+	replaceEnvOnTarget(&target)
+	result := target[2].HostName
+	if result != envs["HOST"] {
+		t.Errorf("Mismatch target field. Expected: %s, found: %s", envs["HOST"], result)
+	}
+}
+
+func TestInnerSliceReplace(t *testing.T) {
+	// setting env variables
+	envs := map[string]string{
+		"HOST": "localhost",
+	}
+
+	for key, val := range envs {
+		t.Setenv(key, val)
+	}
+
+	type Target struct {
+		Hosts []string
+	}
+
+	target := Target{
+		Hosts: []string{
+			"host1",
+			"host2",
+			"${HOST}",
+		},
+	}
+
+	replaceEnvOnTarget(&target)
+	result := target.Hosts[2]
+	if result != envs["HOST"] {
+		t.Errorf("Mismatch target field. Expected: %s, found: %s", envs["HOST"], result)
+	}
+}

@@ -75,6 +75,5 @@ PASS="otherPass" ./test
 ```
 
 ## Limitations
-* In the current lib state it is not possible to replace env variables inside arrays whatsoever. but we are working on that
 * All the fields must be public, this is a limitation of go's reflection lib, there is no way to change this.
 * The lib requires go >= 1.18
