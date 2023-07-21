@@ -32,6 +32,13 @@ func InitializeConfigSingleton[T Instance](path string) error {
 	return nil
 }
 
+func MustInitializeConfigSingleton[T Instance](path string) {
+	err := InitializeConfigSingleton[T](path)
+	if err != nil {
+		panic(err)
+	}
+}
+
 func GetConfig[T Instance]() (T, error) {
 	if singleton.data != nil {
 		if singleton.ty != reflect.TypeOf(*new(T)) {
@@ -41,6 +48,14 @@ func GetConfig[T Instance]() (T, error) {
 	} else {
 		return *new(T), fmt.Errorf("trying to access an unitialized config data")
 	}
+}
+
+func MustGetConfig[T Instance]() T {
+	conf, err := GetConfig[T]()
+	if err != nil {
+		panic(err)
+	}
+	return conf
 }
 
 func loadAndParseConfig[T Instance](path string, target *T) error {
