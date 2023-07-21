@@ -7,8 +7,8 @@ import (
 	"strings"
 )
 
-var envRegex, _ = regexp.Compile(`\$\{[^\}]+\}`)
-var defaultRegex, _ = regexp.Compile(`^\$\{.+\:\-.+\}$`)
+var envRegex = regexp.MustCompile(`\$\{[^\}]+\}`)
+var defaultRegex = regexp.MustCompile(`^\$\{.+\:\-.+\}$`)
 
 func replaceEnvOnTarget(target interface{}) {
 	v := reflect.ValueOf(target)

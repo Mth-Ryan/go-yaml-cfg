@@ -6,6 +6,15 @@ import (
 	"testing"
 )
 
+// Helpers
+func setEnvs(t *testing.T, envs map[string]string) {
+	for key, val := range envs {
+		t.Setenv(key, val)
+	}
+}
+
+// Tests
+
 func TestEnvRegexPass(t *testing.T) {
 	envs := []string{
 		"${HELLO}",
@@ -147,10 +156,7 @@ func TestReplaceOnPlainTarget(t *testing.T) {
 	envs := map[string]string{
 		"PASSWD": "12345",
 	}
-
-	for key, val := range envs {
-		t.Setenv(key, val)
-	}
+	setEnvs(t, envs)
 
 	type Target struct {
 		Username string
@@ -175,10 +181,7 @@ func TestReplaceOnNestedTarget(t *testing.T) {
 	envs := map[string]string{
 		"PASSWD": "12345",
 	}
-
-	for key, val := range envs {
-		t.Setenv(key, val)
-	}
+	setEnvs(t, envs)
 
 	type Target struct {
 		Name string
@@ -211,10 +214,7 @@ func TestOuterSliceReplace(t *testing.T) {
 	envs := map[string]string{
 		"HOST": "localhost",
 	}
-
-	for key, val := range envs {
-		t.Setenv(key, val)
-	}
+	setEnvs(t, envs)
 
 	type InnerTarget struct {
 		HostName string
@@ -239,10 +239,7 @@ func TestInnerSliceReplace(t *testing.T) {
 	envs := map[string]string{
 		"HOST": "localhost",
 	}
-
-	for key, val := range envs {
-		t.Setenv(key, val)
-	}
+	setEnvs(t, envs)
 
 	type Target struct {
 		Hosts []string
