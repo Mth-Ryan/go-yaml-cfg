@@ -75,5 +75,6 @@ PASS="otherPass" ./test
 ```
 
 ## Limitations
+* The env replacement don't work with maps whatsoever, so you are limited to structs, slices and arrays for that.
 * All the fields must be public, this is a limitation of go's reflection lib, there is no way to change this.
 * The lib requires go >= 1.18
