@@ -52,7 +52,7 @@ func main() {
             	panic(err)
     	}
 
-    	config, err = conf.GetConfig[AppSettings]()
+    	config, err = conf.GetConfigFromSingleton[AppSettings]()
     	if err != nil {
             	panic(err)
     	}
